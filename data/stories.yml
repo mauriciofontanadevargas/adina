@@ -1,0 +1,67 @@
+version: "3.1"
+
+stories:
+
+- story: greet and check if has previous issue
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - action: utter_gimme_last_issue
+# the following needs the action server ready:
+#    - action: action_get_last_issue
+  - slot_was_set:
+    - previous_issue: true
+  - action: utter_recall_and_ask_last_issue
+  - checkpoint: check_asked_last_issue
+
+- story: greet and check if has previous issue - handles got better
+  steps:
+  - checkpoint: check_asked_last_issue
+  - or:
+      - intent: mood_great
+      - intent: affirm
+  - action: utter_glad_better
+  - action: utter_proceed_questionnaire
+  - checkpoint: check_starts_routine_questionnaire
+
+- story: greet and check if has previous issue - handles neutral
+  steps:
+  - checkpoint: check_asked_last_issue
+  - intent: mood_neutral
+  - action: utter_neutral
+  - action: utter_proceed_questionnaire
+  - checkpoint: check_starts_routine_questionnaire
+
+- story: greet and check if has previous issue - handles worse
+  steps:
+  - checkpoint: check_asked_last_issue
+  - or:
+      - intent: mood_unhappy
+      - intent: deny
+  - action: utter_got_worse_ask_more
+  - checkpoint: check_starts_questionnaire_previous_issue
+
+
+##################################################################################
+- story: routine questionnaire
+  steps:
+  - checkpoint: check_starts_routine_questionnaire
+  - action: "routine questionnaire starts now"
+
+
+#####################################################################################
+- story: questionnaire previous issue
+  steps:
+  - checkpoint: check_starts_questionnaire_previous_issue
+  - action: utter_ask_describe_whats_happening
+  - action:  previous_issue_form
+  - active_loop: previous_issue_form
+   # call custom action (which will 'call' the nurse)
+  - active_loop: null                      # Form complete, no form is active
+  - action: utter_thanks_responses
+  - or:
+    - slot_was_set:
+      - pain_level_high: true
+    - slot_was_set:
+      - issue_level: a lot
+  - action: utter_call_nurse

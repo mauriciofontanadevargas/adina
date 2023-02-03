@@ -1,0 +1,26 @@
+version: "3.1"
+
+rules:
+
+- rule: Say goodbye anytime the user says goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Say 'I am a bot' anytime the user challenges
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+
+- rule: Example of an unhappy path
+  condition:
+  # Condition that form is active.
+  - active_loop: previous_issue_form
+  steps:
+  # This unhappy path handles the case of an intent `chitchat`.
+  - intent: talk_about_weather
+  - action: utter_chitchat
+  # Return to form after handling the `chitchat` intent
+  - action: previous_issue_form
+  - active_loop: previous_issue_form
