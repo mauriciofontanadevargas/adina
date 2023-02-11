@@ -1,5 +1,4 @@
 version: "3.1"
-
 nlu:
 - intent: greet
   examples: |
@@ -23,7 +22,6 @@ nlu:
     - hello buddy
     - wazzup
     - yo
-
 - intent: goodbye
   examples: |
     - cu
@@ -39,21 +37,19 @@ nlu:
     - have a good one
     - bye bye
     - see you later
-
 - intent: affirm
   examples: |
-   - yes
-   - yep
-   - yeah
-   - indeed
-   - that's right
-   - ok
-   - great
-   - correct
-   - perfect
-   - sounds good
-   - sounds great
-
+    - yes
+    - yep
+    - yeah
+    - indeed
+    - that's right
+    - ok
+    - great
+    - correct
+    - perfect
+    - sounds good
+    - sounds great
 - intent: deny
   examples: |
     - no
@@ -63,7 +59,6 @@ nlu:
     - no thanks
     - nah
     - never
-
 - intent: need_physical_intervention
   examples: |
     - I need to go to the bathroom
@@ -74,15 +69,13 @@ nlu:
     - I need someone to come help me
     - I need to talk with a real person
     - Can you send me a real nurse?
-
 - intent: need_medication_help
   examples: |
     - I can't remember what med I should take today
     - What medication should I take now?
-    - What time should I take [advil]{"entity":"medication"}?
+    - What time should I take [advil](medication)?
     - I don't remember what I have to take
-    - I don't remember if I should take [advil]{"entity":"medication"} now
-
+    - I don't remember if I should take [advil](medication) now
 - intent: mood_great
   examples: |
     - perfect
@@ -102,7 +95,6 @@ nlu:
     - so good
     - very good
     - I'm better now
-
 - intent: mood_unhappy
   examples: |
     - my day was horrible
@@ -124,8 +116,10 @@ nlu:
     - I am annoyed
     - I am afraid
     - worse
-
-
+    - very bad
+    - awful
+    - feeling like shit
+    - I'm having a terrible day
 - intent: mood_neutral
   examples: |
     - not too bad
@@ -134,8 +128,7 @@ nlu:
     - so so
     - same thing
     - surviving
-
-
+    - going
 - intent: talk_about_weather
   examples: |
     - I think it's going to rain
@@ -152,7 +145,6 @@ nlu:
     - Does it look sunny outside today?
     - Oh, do you mind checking the weather for me please?
     - I like sunny days
-
 - intent: bot_challenge
   examples: |
     - are you a bot?
@@ -162,13 +154,11 @@ nlu:
     - I don't trust in you
     - I don't believe a machine can help me
     - I don't think you are useful
-
 - intent: inform_took_medication
   examples: |
     - I took it
     - I took the meds
     - I took them all
-
 - intent: inform_pain_level_high
   examples: |
     - I'm feeling a lot of pain
@@ -179,9 +169,7 @@ nlu:
     - It hurts so much
     - I'm in agony
     - my whole body is aching
-    - really bad
-    - a lot
-
+    - really bad feeling
 - intent: inform_pain_level_medium
   examples: |
     - it hurts but I can handle it
@@ -191,14 +179,11 @@ nlu:
     - It was worse before
     - medium
     - it's going away but it still hurts
-
 - intent: inform_pain_level_low
   examples: |
     - just a bit
     - it's much better now but I still feel it
     - it's going away, I almost good
-
-# What are 20 common description sentences  that people experiencing gastrointestinal issues give when a nurse or doctor asks "Please tell me about your health issue. How do you feel?"  start each sentence in your response with '      - '
 - intent: inform_issue_gastro
   examples: |
     - I'm having [some](issue_level) pain in my stomach.
@@ -221,8 +206,6 @@ nlu:
     - I'm having [a lot](issue_level) of indigestion.
     - I'm having [frequent](issue_frequency) belching and flatulence.
     - I'm having a feeling of heaviness in my abdomen.
-
-# input gpt-3 : What are 20 common description sentences  that people experiencing mobility issues give when a nurse or doctor asks "Please tell me about your health issue. How do you feel?"  start each sentence in your response with '      - '
 - intent: inform_issue_mobility
   examples: |
     - I have difficulty walking, and I [often](issue_frequency) feel pain in my legs and feet.
@@ -244,8 +227,6 @@ nlu:
     - I [often](issue_frequency) have difficulty maintaining my balance when I am walking or standing.
     - I [sometimes](issue_frequency) have trouble with coordination when I am walking or doing other activities.
     - I can [sometimes](issue_frequency) experience numbness or tingling in my limbs, which can make it difficult to move around.
-
-# gpt-3 input: What are 20 common description sentences  that people experiencing brain or mental issues give when a nurse or doctor asks "Please tell me about your health issue. How do you feel?"  start each sentence in your response with      -
 - intent: inform_issue_mental
   examples: |
     - I'm having difficulty concentrating and I'm feeling very anxious.
@@ -269,54 +250,58 @@ nlu:
     - I have been having trouble with self-esteem.
     - I have been having difficulty with maintaining relationships.
     - I have been feeling like I'm in a constant state of fear.
-
-# gpt-3 input What are 20 common description sentences  that people experiencing heart issues give when a nurse or doctor asks "Please tell me about your health issue. How do you feel?"
 - intent: inform_issue_heart
   examples: |
-     - I'm having chest pain and difficulty breathing.
-     - I feel like someone is squeezing my chest.
-     - I'm having a racing heart rate and feeling lightheaded.
-     - I'm having sharp pains in my chest.
-     - I'm having a lot of palpitations.
-     - I'm feeling short of breath.
-     - I'm having a feeling of tightness in my chest.
-     - I'm having difficulty sleeping because of chest pain.
-     - I'm having a feeling of heaviness in my chest.
-     - I'm feeling faint and dizzy.
-     - I'm having a sensation of pressure in my chest.
-     - I'm having difficulty breathing even when I'm not exerting myself.
-     - I'm having a rapid heart rate and feeling weak.
-     - I'm having a burning sensation in my chest.
-     - I'm feeling a tightness in my chest when I take a deep breath.
-     - I'm having a rapid pulse and feeling out of breath.
-     - I'm feeling a tightness in my chest when I move around.
-     - I'm having a sharp pain in my chest that radiates to my arms.
-     - I'm having chest pains that come and go.
-     - I'm having a pounding sensation in my chest.
-
-# gpt3-playground input:
-#What are 20 common description sentences  that people experiencing fatigue give when a nurse or doctor asks "Please tell me about your health issue. How do you feel?"
+    - I'm having chest pain and difficulty breathing.
+    - I feel like someone is squeezing my chest.
+    - I'm having a racing heart rate and feeling lightheaded.
+    - I'm having sharp pains in my chest.
+    - I'm having a lot of palpitations.
+    - I'm feeling short of breath.
+    - I'm having a feeling of tightness in my chest.
+    - I'm having difficulty sleeping because of chest pain.
+    - I'm having a feeling of heaviness in my chest.
+    - I'm feeling faint and dizzy.
+    - I'm having a sensation of pressure in my chest.
+    - I'm having difficulty breathing even when I'm not exerting myself.
+    - I'm having a rapid heart rate and feeling weak.
+    - I'm having a burning sensation in my chest.
+    - I'm feeling a tightness in my chest when I take a deep breath.
+    - I'm having a rapid pulse and feeling out of breath.
+    - I'm feeling a tightness in my chest when I move around.
+    - I'm having a sharp pain in my chest that radiates to my arms.
+    - I'm having chest pains that come and go.
+    - I'm having a pounding sensation in my chest.
 - intent: inform_issue_fatigue
   examples: |
-     - I'm having trouble sleeping and I'm feeling very fatigued during the day.
-     - I feel very tired and have no energy.
-     - I am constantly exhausted and have no motivation.
-     - I'm having difficulty staying awake and alert.
-     - I have difficulty concentrating and remembering things.
-     - I tire easily and have difficulty doing physical activities.
-     - I have a feeling of being overwhelmed and overwhelmed.
-     - I'm having difficulty sleeping, either falling asleep or staying asleep.
-     - I feel foggy, disconnected and as if I'm in a dream-like state.
-     - I feel an unusual level of fatigue that doesn't seem to go away.
-     - I'm experiencing a lack of motivation and enthusiasm.
-     - I'm feeling apathetic and unmotivated.
-     - My body aches and I'm having difficulty with physical activity.
-     - I'm having difficulty focusing and concentrating.
-     - I'm feeling unusually weak and drained.
-     - I'm having difficulty getting through the day without feeling tired.
-     - I'm feeling tired and run down, even after getting enough sleep.
-     - I'm having difficulty completing tasks and staying on task.
-     - I'm feeling overwhelmed by everyday tasks and activities.
-     - My body feels heavy and sluggish.
-     - I'm having difficulty waking up in the mornings.
-
+    - I'm having trouble sleeping and I'm feeling very fatigued during the day.
+    - I feel very tired and have no energy.
+    - I am constantly exhausted and have no motivation.
+    - I'm having difficulty staying awake and alert.
+    - I have difficulty concentrating and remembering things.
+    - I tire easily and have difficulty doing physical activities.
+    - I have a feeling of being overwhelmed and overwhelmed.
+    - I'm having difficulty sleeping, either falling asleep or staying asleep.
+    - I feel foggy, disconnected and as if I'm in a dream-like state.
+    - I feel an unusual level of fatigue that doesn't seem to go away.
+    - I'm experiencing a lack of motivation and enthusiasm.
+    - I'm feeling apathetic and unmotivated.
+    - My body aches and I'm having difficulty with physical activity.
+    - I'm having difficulty focusing and concentrating.
+    - I'm feeling unusually weak and drained.
+    - I'm having difficulty getting through the day without feeling tired.
+    - I'm feeling tired and run down, even after getting enough sleep.
+    - I'm having difficulty completing tasks and staying on task.
+    - I'm feeling overwhelmed by everyday tasks and activities.
+    - My body feels heavy and sluggish.
+    - I'm having difficulty waking up in the mornings.
+- intent: inform_name
+  examples: |
+    - My name is [John](user_name)
+    - My name is [Clara](user_name)
+    - I'm [John](user_name)
+    - I'm  [Clara](user_name)
+    - [John](user_name)
+    - [Clara](user_name)
+    - [Richard](user_name)
+    - [Susan](user_name)

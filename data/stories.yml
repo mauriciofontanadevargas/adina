@@ -2,66 +2,126 @@ version: "3.1"
 
 stories:
 
-- story: greet and check if has previous issue
+- story: greet known user with no previous issue and asks how they are feeling today
   steps:
   - intent: greet
-  - action: utter_greet
-  - action: utter_gimme_last_issue
-# the following needs the action server ready:
-#    - action: action_get_last_issue
+  - action: action_get_user
   - slot_was_set:
-    - previous_issue: true
-  - action: utter_recall_and_ask_last_issue
-  - checkpoint: check_asked_last_issue
+      - user_name: "dummy" #value doesnt matter here, but rasa is throwing an error when no value is added (it's a rasa bug, check more here https://github.com/RasaHQ/rasa/issues/8379)
+  - action: utter_greet
+  - action: action_get_last_issue
+  - slot_was_set:
+      - last_issue: null #check if slot was not set
+  - action: utter_how_are_you_feeling
+  - checkpoint: check_asked_how_feeling # three different checkpoints were created to treat the 3 possible intents for this question (bad, neutral, well)
 
-- story: greet and check if has previous issue - handles got better
+- story: greet known user  WITH previous issue and asks how they are feeling today
   steps:
-  - checkpoint: check_asked_last_issue
-  - or:
-      - intent: mood_great
-      - intent: affirm
-  - action: utter_glad_better
+  - intent: greet
+  - action: action_get_user
+  - slot_was_set:
+      - user_name: "dummy" #value doesnt matter here, but rasa is throwing an error when no value is added (it's a rasa bug, check more here https://github.com/RasaHQ/rasa/issues/8379)
+  - action: utter_greet
+  - action: action_get_last_issue
+  - slot_was_set:
+      - last_issue: "dummy" #value doesnt matter here, but rasa is throwing an error when no value is added (it's a rasa bug, check more here https://github.com/RasaHQ/rasa/issues/8379)
+  - action: utter_recall_and_ask_last_issue
+  - checkpoint: check_asked_how_feeling # three different checkpoints were created to treat the 3 possible intents for this question (bad, neutral, well)
+
+- story: greet new user and asks how they are feeling today
+  steps:
+  - intent: greet
+  - action: action_get_user
+  - slot_was_set:
+      - user_name: null #check if slot was not set
+  - action: utter_greet_new_user
+  - action:  get_user_name_form #starts form to get user name. form is used to make it repeat until the slot user_name is filled
+  - active_loop: get_user_name_form
+  - slot_was_set:
+      - requested_slot: user_name
+  - slot_was_set:
+      - user_name: "dummy"
+  - slot_was_set:
+      - requested_slot: null
+  - active_loop: null                      # Form complete, no form is active
+  - action: action_register_user  #slot user_name has been filled in the form
+  - action: utter_nice_meet_you
+  - action: utter_how_are_you_feeling
+  - checkpoint: check_asked_how_feeling # three different checkpoints were created to treat the 3 possible intents for this question (bad, neutral, well)
+
+- story: handles user feeling well
+  steps:
+  - checkpoint: check_asked_how_feeling
+  - intent: mood_great
+  - action: utter_glad_well
   - action: utter_proceed_questionnaire
   - checkpoint: check_starts_routine_questionnaire
 
-- story: greet and check if has previous issue - handles neutral
+- story:  handles user feeling neutral
   steps:
-  - checkpoint: check_asked_last_issue
+  - checkpoint: check_asked_how_feeling
   - intent: mood_neutral
   - action: utter_neutral
   - action: utter_proceed_questionnaire
   - checkpoint: check_starts_routine_questionnaire
 
-- story: greet and check if has previous issue - handles worse
+- story:  handles user feeling bad and willing to give more info
   steps:
-  - checkpoint: check_asked_last_issue
-  - or:
-      - intent: mood_unhappy
-      - intent: deny
+  - checkpoint: check_asked_how_feeling
+  - intent: mood_unhappy
   - action: utter_got_worse_ask_more
-  - checkpoint: check_starts_questionnaire_previous_issue
+  - intent: affirm
+  - checkpoint: check_starts_feeling_bad_questionnaire
 
+- story:  handles user feeling bad and NOT willing to give more info
+  steps:
+  - checkpoint: check_asked_how_feeling
+  - intent: mood_unhappy
+  - action: utter_got_worse_ask_more
+  - intent: deny
+  - action: utter_talk_later
 
 ##################################################################################
 - story: routine questionnaire
   steps:
   - checkpoint: check_starts_routine_questionnaire
-  - action: "routine questionnaire starts now"
+  - action: utter_starts_routine_questionnaire
+
+##################################################################################
+- story: feeling bad questionnaire
+  steps:
+  - checkpoint: check_starts_feeling_bad_questionnaire
+  - action: utter_ask_describe_whats_happening
+  - or:
+      - intent: inform_issue_gastro
+      - intent: inform_issue_mobility
+      - intent: inform_issue_mental
+      - intent: inform_issue_heart
+      - intent: inform_issue_fatigue
+  - slot_was_set:
+      - issue_type: "dummy" # issue_type will be populated when any of the intents above happen
+  - action: utter_understood_issue_ask_more
+
 
 
 #####################################################################################
-- story: questionnaire previous issue
-  steps:
-  - checkpoint: check_starts_questionnaire_previous_issue
-  - action: utter_ask_describe_whats_happening
-  - action:  previous_issue_form
-  - active_loop: previous_issue_form
-   # call custom action (which will 'call' the nurse)
-  - active_loop: null                      # Form complete, no form is active
-  - action: utter_thanks_responses
-  - or:
-    - slot_was_set:
-      - pain_level_high: true
-    - slot_was_set:
-      - issue_level: a lot
-  - action: utter_call_nurse
+#- story: questionnaire previous issue
+#  steps:
+#  - checkpoint: check_starts_questionnaire_previous_issue
+#  - action: utter_ask_describe_whats_happening
+#  - or:
+#      - intent: inform_issue_gastro
+#      - intent: inform_issue_mobility
+#      - intent: inform_issue_mental
+#      - intent: inform_issue_heart
+#      - intent: inform_issue_fatigue
+#  - action:  issue_form
+#  - active_loop: issue_form
+#  - active_loop: null                      # Form complete, no form is active
+#  - action: utter_thanks_response
+#  - or:
+#    - slot_was_set:
+#      - pain_level_high: true
+#    - slot_was_set:
+#      - issue_level: a lot
+#  - action: utter_call_nurse

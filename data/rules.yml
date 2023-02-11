@@ -13,14 +13,14 @@ rules:
   - action: utter_iamabot
 
 
-- rule: Example of an unhappy path
-  condition:
-  # Condition that form is active.
-  - active_loop: previous_issue_form
-  steps:
-  # This unhappy path handles the case of an intent `chitchat`.
-  - intent: talk_about_weather
-  - action: utter_chitchat
-  # Return to form after handling the `chitchat` intent
-  - action: previous_issue_form
-  - active_loop: previous_issue_form
+#- rule: Example of an unhappy path
+#  condition:
+#  # Condition that form is active.
+#  - active_loop: issue_form
+#  steps:
+#  # This unhappy path handles the case of an intent `chitchat`.
+#  - intent: talk_about_weather
+#  - action: utter_chitchat
+#  # Return to form after handling the `chitchat` intent
+#  - action: issue_form
+#  - active_loop: issue_form
