@@ -3,6 +3,8 @@ intents:
 - affirm
 - bot_challenge
 - deny
+- high_intensity
+- low_intensity
 - feeling_pain
 - goodbye
 - greet
@@ -74,13 +76,13 @@ responses:
   - text: I'm sorry for the inconvenience. May I inquire about the issue a bit further?
   - text: Pardon the situation. Can I ask you a couple of more questions regarding the problem?
   utter_ask_took_medication:
-  - text: Regarding the {issue}; did you take the medication recommended?
-  utter_ask_issue_level_was_informed:
+  - text: Did you take the medication recommended?
+  utter_ask_issue_level:
   - text: How much pain are you feeling? Some or a lot?
   utter_ask_describe_whats_happening:
   - text: Can you describe what's happening in general?
   utter_understood_issue_ask_more:
-  - text: I understand you have a {issue_type} problem.
+  - text: I understand you have a {issue_type} problem. I will ask you a few more questions about it
   utter_call_nurse:
   - text: I understand your pain is severe. I'll ask the nurse to come see you
   utter_chitchat:
@@ -104,37 +106,19 @@ slots:
       intent: inform_took_medication
       value: true
       conditions:
-      - active_loop: previous_issue_form
-  pain_level_high:
-    type: bool
-    influence_conversation: true
-    mappings:
-    - type: from_intent
-      intent: inform_pain_level_high
-      value: true
+      - active_loop: issue_form
     - type: from_intent
       intent: affirm
       value: true
       conditions:
-      - active_loop: issue_form
-  pain_level_medium:
-    type: bool
-    influence_conversation: false
-    mappings:
+        - active_loop: issue_form
+          requested_slot: took_medication
     - type: from_intent
-      intent: inform_pain_level_medium
-      value: true
+      intent: deny
+      value: false
       conditions:
-      - active_loop: issue_form
-  pain_level_low:
-    type: bool
-    influence_conversation: false
-    mappings:
-    - type: from_intent
-      intent: inform_pain_level_low
-      value: true
-      conditions:
-      - active_loop: issue_form
+        - active_loop: issue_form
+          requested_slot: took_medication
   issue_type:
     type: text
     influence_conversation: true
@@ -154,30 +138,6 @@ slots:
     - type: from_intent
       intent: inform_issue_fatigue
       value: fatigue
-  issue_level_was_informed:
-    type: bool
-    influence_conversation: true
-    mappings:
-    - type: from_intent
-      intent: inform_pain_level_low
-      value: true
-      conditions:
-      - active_loop: issue_form
-    - type: from_intent
-      intent: inform_pain_level_medium
-      value: true
-      conditions:
-      - active_loop: issue_form
-    - type: from_intent
-      intent: inform_pain_level_high
-      value: true
-      conditions:
-      - active_loop: issue_form
-    - type: from_entity
-      entity: issue_level
-      value: true
-      conditions:
-      - active_loop: issue_form
   issue_level:
     type: categorical
     values:
@@ -187,6 +147,28 @@ slots:
     mappings:
     - type: from_entity
       entity: issue_level
+    - type: from_intent
+      intent: inform_pain_level_low
+      value: some
+    - type: from_intent
+      intent: inform_pain_level_medium
+      value: some
+    - type: from_intent
+      intent: inform_pain_level_high
+      value: a lot
+    - type: from_intent
+      intent: high_intensity
+      value: a lot
+      conditions:
+        - active_loop: issue_form
+          requested_slot: issue_level
+    - type: from_intent
+      intent: low_intensity
+      value: some
+      conditions:
+        - active_loop: issue_form
+          requested_slot: issue_level
+
   issue_frequency:
     type: categorical
     values:
@@ -208,7 +190,7 @@ forms:
   issue_form:
     required_slots:
     - took_medication
-    - issue_level_was_informed
+    - issue_level
   get_user_name_form:
     required_slots:
     - user_name

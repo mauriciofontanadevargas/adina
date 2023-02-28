@@ -114,6 +114,8 @@ class ActionDefaultFallback(Action):
     """Executes the fallback action and goes back to the previous state
     of the dialogue"""
 
+    gpt3_handler = gpt3.gpt3Interface()
+
     def name(self) -> Text:
         return ACTION_DEFAULT_FALLBACK_NAME
 
@@ -124,12 +126,13 @@ class ActionDefaultFallback(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
 
-        dispatcher.utter_message(template="my_custom_fallback_template")
+        # dispatcher.utter_message(template="my_custom_fallback_template")
         print("Action Fallback called")
         print("Last message was: " + tracker.latest_message['text'])
-        response =  gpt3.sendCompletionQuery(tracker.latest_message['text'])
-        print("gpt3 response " + response)
+        response = self.gpt3_handler.sendCompletionQuery(tracker.latest_message['text'])
+        print("gpt3 response: " + response)
         dispatcher.utter_message(text=response)
+
 
         return [UserUtteranceReverted()]
 

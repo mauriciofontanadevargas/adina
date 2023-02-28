@@ -25,6 +25,7 @@ stories:
   - action: action_get_last_issue
   - slot_was_set:
       - last_issue: "dummy" #value doesnt matter here, but rasa is throwing an error when no value is added (it's a rasa bug, check more here https://github.com/RasaHQ/rasa/issues/8379)
+
   - action: utter_recall_and_ask_last_issue
   - checkpoint: check_asked_how_feeling # three different checkpoints were created to treat the 3 possible intents for this question (bad, neutral, well)
 
@@ -81,6 +82,32 @@ stories:
   - intent: deny
   - action: utter_talk_later
 
+- story:  handles user has some issue
+  steps:
+  - checkpoint: check_asked_how_feeling
+  - or:
+      - intent: inform_issue_gastro
+      - intent: inform_issue_mobility
+      - intent: inform_issue_mental
+      - intent: inform_issue_heart
+      - intent: inform_issue_fatigue
+  - slot_was_set:
+      - issue_type: "dummy" # issue_type will be populated when any of the intents above happen
+  - action: utter_understood_issue_ask_more
+  - action:  issue_form
+  - active_loop: issue_form
+  - slot_was_set:
+      - requested_slot: issue_level
+  - slot_was_set:
+      - requested_slot: took_medication
+  - slot_was_set:
+      - requested_slot: null
+  - active_loop: null                      # Form complete, no form is active
+  - action: utter_thanks_response
+  - slot_was_set:
+    - issue_level: a lot
+  - action: utter_call_nurse
+
 ##################################################################################
 - story: routine questionnaire
   steps:
@@ -101,27 +128,17 @@ stories:
   - slot_was_set:
       - issue_type: "dummy" # issue_type will be populated when any of the intents above happen
   - action: utter_understood_issue_ask_more
+  - action:  issue_form
+  - active_loop: issue_form
+  - slot_was_set:
+      - requested_slot: issue_level
+  - slot_was_set:
+      - requested_slot: took_medication
+  - slot_was_set:
+      - requested_slot: null
+  - active_loop: null                      # Form complete, no form is active
+  - action: utter_thanks_response
+  - slot_was_set:
+      - issue_level: a lot
+  - action: utter_call_nurse
 
-
-
-#####################################################################################
-#- story: questionnaire previous issue
-#  steps:
-#  - checkpoint: check_starts_questionnaire_previous_issue
-#  - action: utter_ask_describe_whats_happening
-#  - or:
-#      - intent: inform_issue_gastro
-#      - intent: inform_issue_mobility
-#      - intent: inform_issue_mental
-#      - intent: inform_issue_heart
-#      - intent: inform_issue_fatigue
-#  - action:  issue_form
-#  - active_loop: issue_form
-#  - active_loop: null                      # Form complete, no form is active
-#  - action: utter_thanks_response
-#  - or:
-#    - slot_was_set:
-#      - pain_level_high: true
-#    - slot_was_set:
-#      - issue_level: a lot
-#  - action: utter_call_nurse
